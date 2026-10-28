@@ -1,0 +1,24 @@
+size 10
+penup
+goto -30 -30
+pendown
+forward 50
+right 90
+forward 50
+right 90
+forward 50
+right 90
+forward 50
+right 90
+penup
+goto 30 30
+pendown
+forward 50
+right 90
+forward 50
+right 90
+forward 50
+right 90
+forward 50
+right 90
+penup

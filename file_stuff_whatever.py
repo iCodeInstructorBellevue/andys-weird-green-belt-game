@@ -1,0 +1,7 @@
+my_file_thingy = open("thingy.txt", "w+t")
+some_thing = my_file_thingy.read()
+print(" >>> " + some_thing)
+my_file_thingy.write("gasyudgyuasdgau")
+some_thing = my_file_thingy.read()
+print(" >>> " + some_thing)
+my_file_thingy.close()
