@@ -1,9 +1,9 @@
+import time
 import random
 import word_maker
 import funny_looking_thing
 
-# TODO: timer based attacking
-#       custom dialogue for enemies
+# TODO: custom dialogue for enemies
 #       classes for player + enemy
 #       power ups ?
 #       graphing out attacks
@@ -18,7 +18,15 @@ class Player:
         self.health = 100
 
     def attack (self, enemy):
-        my_damage = random.randint(5, 20)
+        max_dmg = 20
+        target_time = 10
+        start_time = time.time()
+        input("Press enter after " + str(target_time) + " seconds: ")
+        passed_time = time.time() - start_time
+
+        # david's cursed formula
+        #my_damage = 3.33 / ((1/max_dmg/3.333) + abs(passed_time - target_time))
+        my_damage = max(0, max_dmg - (passed_time - target_time) ** 2)
         enemy.health -= my_damage
         print("I did " + str(my_damage) + " points of damage to " + enemy.name)
 
@@ -47,7 +55,6 @@ enemy_count = random.randint(3, 7)
 for i in range(enemy_count):
     cur_enemy = Enemy()
     enemies[cur_enemy.name] = cur_enemy
-    # enemies[word_maker.getRandomWord()] = random.randint(10, 50)
 enemies_name_list = enemies.keys()
 enemies_data_list = enemies.values()
 
@@ -69,33 +76,25 @@ while player.health > 0 and isAnyEnemyAlive():
     for i, cur_enemy in enumerate(enemies.values()):
         if i == random_num:
             attacking_enemy = cur_enemy
-    
+
+    print(attacking_enemy.avatar)
 
     player.attack(attacking_enemy)
     attacking_enemy.attack(player)
-    # my_damage = random.randint(5, 20)
-    # enemy_damage = random.randint(5, 25)
-    # print("I did " + str(my_damage) + " points of damage to " + attacking_enemy_name)
-    # print("Enemy " + attacking_enemy_name + " did " + str(enemy_damage) + " points of damage")
 
-    # my_health -= enemy_damage
-    # enemies[attacking_enemy_name] -= my_damage
-
-    # TODO: replace all of the missing vars here with the proper class property names
     print("I have " + str(player.health) + " health")
-    print("Enemy " + attacking_enemy_name + " has " + str(enemies[attacking_enemy_name]) + " health")
+    print("Enemy " + attacking_enemy.name + " has " + str(attacking_enemy.health) + " health")
 
-    # TODO: access .health here instead of comparing directly
-    if enemies[attacking_enemy_name] <= 0:
-        enemies.pop(attacking_enemy_name)
+    if attacking_enemy.health <= 0:
+        enemies.pop(attacking_enemy.name)
 
-    input("")
+    #input("")
 
     turns_count += 1
 
 print("Surviving Enemies:")
-for enemy_name, enemy_health in enemies.items():
-    print("Enemy: " + enemy_name + ", Health: " + str(enemy_health))
+for cur_enemy in enemies.values():
+    print("Enemy: " + cur_enemy.name + ", Health: " + str(cur_enemy.health))
 print("")
 
 if player.health <= 0:
