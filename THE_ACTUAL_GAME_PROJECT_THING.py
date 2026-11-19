@@ -51,6 +51,23 @@ def getRandomItem():
     cloned_item.rarity = random.choices(RARITIES, RARITY_WEIGHTS, k=1)[0]
     return cloned_item
 
+MONEY_BRIBE_CHANCES = [20, 15, 10, 5]
+# TODO: fix usage of affectWithItem() down there somewhere
+# TODO: do bomb
+def affectWithItem(enemies, enemy, player, item):
+    if item.name == MONEY.name:
+        if random.randint(1, MONEY_BRIBE_CHANCES[item.rarity]) == 1:
+            enemy.health = 0
+            print("Enemy " + enemy.name + " got bribed and left")
+    elif item.name == MYSTERY.name:
+        pass
+    elif item.name == BOMB.name:
+        pass
+    elif item.name == STICK.name:
+        enemy.health -= 3 * (item.rarity + 1)
+    else:
+        print("Nothing happened.")
+
 class Player:
     health = 0
     bag = []
@@ -83,22 +100,12 @@ class Enemy:
         self.health = random.randint(10, 50)
 
     def attack (self, player):
-        enemy_damage = random.randint(5, 25)
-        player.health -= enemy_damage
-        print("Enemy " + self.name + " did " + str(enemy_damage) + " points of damage")
+        if self.health > 0:
+            enemy_damage = random.randint(5, 25)
+            player.health -= enemy_damage
+            print("Enemy " + self.name + " did " + str(enemy_damage) + " points of damage")
 
-    # TODO: make each item do something that is scalable by the rarity
-    def affectWithItem(self, item):
-        if item.name == MONEY.name:
-            pass
-        elif item.name == MYSTERY.name:
-            pass
-        elif item.name == BOMB.name:
-            pass
-        elif item.name == STICK.name:
-            pass
-        else:
-            print("Nothing happened.")
+    
 
 
 turns_count = 0
@@ -141,10 +148,19 @@ while player.health > 0 and isAnyEnemyAlive():
         print("ITEMS:")
         for cur_item in player.bag:
             print("  " + cur_item.icon + " " + getRarityName(cur_item.rarity) + " " + cur_item.name)
-        chosen_item = input("Choose an item: ")
-        for cur_item in player.bag:
-            if getRarityName(cur_item.rarity) + cur_item.name == chosen_item:
-
+       
+        is_valid_chosen_item_name = False
+        while not is_valid_chosen_item_name:
+             chosen_item_name = input("Choose an item (type `exit` to not choose): ")
+             if chosen_item_name == "exit":
+                 print("You didn't choose anything")
+                 break
+             for cur_item in player.bag:
+                if getRarityName(cur_item.rarity) + " " + cur_item.name == chosen_item_name:
+                    attacking_enemy.affectWithItem(cur_item)
+                    player.affectWithItem(cur_item)
+                    player.bag.remove(cur_item)
+                    is_valid_chosen_item_name = True
     else:
         print("You chose to do something dumb so you just took damage :/")
 
